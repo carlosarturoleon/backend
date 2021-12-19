@@ -13,9 +13,14 @@ const cors_config = {
     origin: '*'
 }
 
+
 var jsonParser = bodyParser.json()
  
-app.use('/api', jsonParser, cors(cors_config), routes)
+app.use('/api', jsonParser, cors(cors_config), (req,res)=>{
+    res.json({
+        mensaje: "prueba"
+    })
+})
 // app.use('/api', jsonParser, cors(cors_config), validar_token, rutas)
 
 
