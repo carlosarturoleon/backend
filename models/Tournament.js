@@ -11,6 +11,6 @@ const tournamentSchema = new Schema({
     state: String
 })
 
-const Tournaments = mongoose.model('tournaments', tournamentSchema)
+const Tournament = mongoose.model('tournaments', tournamentSchema)
 
-module.exports = Tournaments
+module.exports = Tournament

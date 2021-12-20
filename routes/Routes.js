@@ -2,12 +2,12 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const routes = express.Router();
 
-const Tournaments = require("../models/Tournament");
+const Tournament = require("../models/Tournament");
 const Usuario = require("../models/Usuario");
 const Notificacion = require('../models/Notificacion')
 
 const get_tournament = async () => {
-  const data = await Tournaments.find();
+  const data = await Tournament.find();
   return data;
 };
 
@@ -17,14 +17,24 @@ routes.get("/get_tournaments", async (req, res) => {
 
 routes.get("/get_tournaments/:id", async (req, res) => {
   let tournament_id = req.params.id;
-  let tournament = await Tournaments.findById(tournament_id);
+  let tournament = await Tournament.findById(tournament_id);
 
   res.json(tournament);
 });
 
 routes.post("/create_tournamet", async (req, res) => {
   let body = req.body;
-  let tournament = new Tournaments(body);
+
+  let new_tournamet = {
+    name: body.name,
+    place: body.place,
+    date: body.date,
+    numberofteams: body.numberofteams,
+    prize: body.prize,
+    state: body.state
+  };
+
+  let tournament = new Tournament(new_tournamet);
 
   await tournament.save();
 
@@ -39,6 +49,24 @@ routes.delete("/delete_tournament/:id_tournament", async (req, res) => {
 
   res.json({
     mensaje: "Tournamet deleted",
+  });
+});
+
+routes.put("/update_tournament/:id_usuario", async (req, res) => {
+  const id_tournament = req.params.id_tournament;
+
+  const tournament = await Tournament.findById(id_tournament);
+  tournament.name = req.body.name
+  tournament.place = req.body.place
+  tournament.date = req.body.date
+  tournament.numberofteams = req.body.numberofteams
+  tournament.prize = req.body.prize
+  tournament.state  = req.body.state
+
+  await tournament.save()
+
+  res.json({
+    mensaje: "Tournament updated",
   });
 });
 
@@ -58,11 +86,12 @@ routes.put("/actualizar_usuario/:id_usuario", async (req, res) => {
   });
 });
 
-routes.get("/get_usuarios", async (req, res) => {
+routes.get('/get_usuarios', async (req, res) => {
   const usuarios = await Usuario.find();
 
   res.json(usuarios);
 });
+
 
 routes.get("/get_usuario/:id_usuario", async (req, res) => {
   const id_usuario = req.params.id_usuario;
@@ -77,14 +106,14 @@ routes.post("/crear_usuario", async (req, res) => {
 
   let salto = await bcrypt.genSalt(10);
 
-  let password = await bcrypt.hash(body.password, salto);
+  let password = await bcrypt.hash(body.contraseña, salto);
 
   let nuevo_usuario = {
+    cedula: body.cedula,
     nombre: body.nombre,
     correo: body.correo,
-    celular: body.celular,
-    rol: body.rol,
-    password: password,
+    acceso: body.acceso,
+    contraseña: password
   };
 
   let usuario = new Usuario(nuevo_usuario);
