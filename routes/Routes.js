@@ -6,13 +6,15 @@ const Tournament = require("../models/Tournament");
 const Usuario = require("../models/Usuario");
 const Notificacion = require('../models/Notificacion')
 const UsuariosInternos =require ("../models/UsuerInt")
+const EquiposEx= require("../models/Equipos")
+const Resultados= require ("../models/Resultados")
 
 
 const userInt = async () => {
   const usersI =await UsuariosInternos.find()
   return usersI;
 }
-//Mostrar tabla de Usuarios Internos, falta poner el enlace en el front
+//Mostrar tabla de Usuarios Internos
 
 routes.get("/usuariosInt", async (req, res) => {
   res.json(await userInt());
@@ -28,6 +30,61 @@ routes.post("/crearUserInt", async (req,res)=>{
   res.json(userInt)
   
 })
+
+//eliminar usuario interno
+
+routes.delete("/eliminar_userInt/:id", async (req,res)=>{
+  const id_user = req.params.id
+
+  const usuario = UsuariosInternos.findById(id_user)
+
+  await usuario.deleteOne()
+
+})
+
+//Equipos
+const Equipos = async () => {
+  const equipos = await EquiposEx.find()
+  return equipos; 
+}
+
+//Mostrar tabla de los equipos
+
+routes.get("/equiposUsers", async (req,res)=>{
+  res.json( await Equipos());
+})
+
+//Creacion de equipos
+
+routes.post("/createEquipos", async (req, res)=>{
+  let body=req.body
+  let equipos =new EquiposEx(body)
+  await equipos.save()
+  res.json(equipos)
+})
+
+//Envio resultados a la base de datos
+
+const Resultado = async ()=>{
+  const resul= await Resultados.find()
+  return resul;
+}
+
+//Mostrar Tabla de resultados 
+
+routes.get("/result", async (req, res)=>{
+  res.json(await Resultado());
+})
+
+//Creacion de resultados
+
+routes.post ("/crearResul", async (req, res)=>{
+  let body =req.body
+  let resultado= new Resultados(body)
+  await resultado.save()
+  res.json(resultado)
+})
+
 
 //Crear torneos
 const get_tournament = async () => {
@@ -69,9 +126,9 @@ routes.post("/create_tournamet", async (req, res) => {
 
 //Borrar torneos
 routes.delete("/delete_tournament/:id_tournament", async (req, res) => {
-  const id_tournament = req.params.id_tournament;
+  const id_fruta = req.params.id_tournament;
 
-  const tournament = Tournament.findById(id_tournament);
+  const tournament = Tournaments.findById(id_tournament);
   await tournament.deleteOne();
 
   res.json({
@@ -136,16 +193,24 @@ routes.get("/get_usuario/:id_usuario", async (req, res) => {
 routes.post("/crear_usuario", async (req, res) => {
   let body = req.body;
 
-  let salto = await bcrypt.genSalt(10);
+  // console.log("")
 
-  let password = await bcrypt.hash(body.contraseña, salto);
+  // // let salto = await bcrypt.genSalt(10);
+  // // let password = await bcrypt.hash(body.contraseña, salto);
+  // let password;
+
+  // bcrypt.genSalt(10, function(err, salt) {
+  //   bcrypt.hash(body.contraseña, salt, function(err, hash) {
+  //     password = hash;
+  //   });
+  // });
 
   let nuevo_usuario = {
     cedula: body.cedula,
     nombre: body.nombre,
     correo: body.correo,
     acceso: body.acceso,
-    contraseña: password
+    contraseña: body.contraseña
   };
 
   let usuario = new Usuario(nuevo_usuario);
@@ -154,6 +219,15 @@ routes.post("/crear_usuario", async (req, res) => {
 
   res.json(usuario);
 });
+
+routes.delete("/eliminar_user/:id", async (req,res)=>{
+  const id_user = req.params.id
+
+  const usuario = Usuario.findById(id_user)
+
+  await usuario.deleteOne()
+
+})
 
 routes.get('/get_notificacion/:id_usuario', async (req, res) => {
 
