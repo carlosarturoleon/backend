@@ -5,24 +5,50 @@ const routes = express.Router();
 const Tournament = require("../models/Tournament");
 const Usuario = require("../models/Usuario");
 const Notificacion = require('../models/Notificacion')
+const UsuariosInternos =require ("../models/UsuerInt")
 
+
+const userInt = async () => {
+  const usersI =await UsuariosInternos.find()
+  return usersI;
+}
+//Mostrar tabla de Usuarios Internos, falta poner el enlace en el front
+
+routes.get("/usuariosInt", async (req, res) => {
+  res.json(await userInt());
+})
+
+//Creacion de usuarios internos
+
+routes.post("/crearUserInt", async (req,res)=>{
+  let body= req.body
+  let userInt= new UsuariosInternos(body)
+  await userInt.save()
+
+  res.json(userInt)
+  
+})
+
+//Crear torneos
 const get_tournament = async () => {
-  const data = await Tournament.find();
-  return data;
+   const data = await Tournament.find();
+   return data;
 };
 
-routes.get("/get_tournaments", async (req, res) => {
-  res.json(await get_tournament());
-});
+
+ routes.get("/get_tournaments", async (req, res) => {
+   res.json(await get_tournament());
+ });
 
 routes.get("/get_tournaments/:id", async (req, res) => {
-  let tournament_id = req.params.id;
-  let tournament = await Tournament.findById(tournament_id);
-
-  res.json(tournament);
+   let tournament_id = req.params.id;
+   let tournament = await Tournament.findById(tournament_id);
+    res.json(tournament);
 });
 
 routes.post("/create_tournamet", async (req, res) => {
+
+
   let body = req.body;
 
   let new_tournamet = {
@@ -41,6 +67,7 @@ routes.post("/create_tournamet", async (req, res) => {
   res.json(tournament);
 });
 
+//Borrar torneos
 routes.delete("/delete_tournament/:id_tournament", async (req, res) => {
   const id_tournament = req.params.id_tournament;
 
@@ -52,6 +79,8 @@ routes.delete("/delete_tournament/:id_tournament", async (req, res) => {
   });
 });
 
+
+//Actualizar torneos
 routes.put("/update_tournament/:id_usuario", async (req, res) => {
   const id_tournament = req.params.id_tournament;
 
@@ -86,6 +115,8 @@ routes.put("/actualizar_usuario/:id_usuario", async (req, res) => {
   });
 });
 
+//Mostrar usuarios
+
 routes.get('/get_usuarios', async (req, res) => {
   const usuarios = await Usuario.find();
 
@@ -101,6 +132,7 @@ routes.get("/get_usuario/:id_usuario", async (req, res) => {
   res.json(usuarios);
 });
 
+//Crear usuarios
 routes.post("/crear_usuario", async (req, res) => {
   let body = req.body;
 
