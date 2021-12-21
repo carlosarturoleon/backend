@@ -42,9 +42,9 @@ routes.post("/create_tournamet", async (req, res) => {
 });
 
 routes.delete("/delete_tournament/:id_tournament", async (req, res) => {
-  const id_fruta = req.params.id_tournament;
+  const id_tournament = req.params.id_tournament;
 
-  const tournament = Tournaments.findById(id_tournament);
+  const tournament = Tournament.findById(id_tournament);
   await tournament.deleteOne();
 
   res.json({
