@@ -6,6 +6,7 @@ const nombre_bd = process.env.NOMBRE_BD
 
 const uri_bd = `mongodb+srv://${usuario}:${pass}@server.eg2fl.mongodb.net/${nombre_bd}?retryWrites=true&w=majority`
 
+
 mongoose.connect(uri_bd)
 .then(() => console.log("Database connected"))
 .catch((e) => console.log("Error: ", e))

@@ -13,7 +13,6 @@ const cors_config = {
     origin: '*'
 }
 
-
 var jsonParser = bodyParser.json()
  
 app.use('/api', jsonParser, cors(cors_config), routes)
